@@ -115,38 +115,37 @@ var app = {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(deleteRow, errorCB);
             document.getElementById('qrpopup').style.display='none';
-        }
+        });
 
         //goEdit()
         document.querySelector('.go-edit').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(editRow, errorCB);
             document.getElementById('qrpopup').style.display = 'none';
-        }
+        });
 
         //#discard
         document.querySelector('#discard').addEventListener('click', function() {
             document.getElementById('qrpopup').style.display='none';
-        }
+        });
 
         //goInsert()
         document.querySelector('.go-insert').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(insertDB, errorCB, successCB);
-            }
-        }
+        });
 
         //goSearch()
         document.querySelector('.go-search').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(searchQueryDB, errorCB);
-        }
+        });
 
         //successCB()
         document.querySelector('.go-successCB').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(queryDB, errorCB);
-        }
+        });
     }
 };
 
