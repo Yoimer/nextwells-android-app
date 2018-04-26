@@ -60,7 +60,8 @@ var app = {
             var len = results.rows.length;
             for (var i = 0; i < len; i++) {
                 var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
-                tblText += '<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
+                //tblText += '<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
+                tblText += '<tr class="go-popup"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
                 }
                 tblText += "</table>";
                 document.getElementById("tblDiv").innerHTML = tblText;
@@ -97,8 +98,7 @@ var app = {
             tx.executeSql('INSERT INTO DEMO (name,number) VALUES ("' +document.getElementById("txtName").value +'","'+document.getElementById("txtNumber").value+'")');
         }
 
-        //Show the popup after tapping a row in table
-        //
+        // //Show the popup after tapping a row in table
         function goPopup(row,rowname,rownum) {
             currentRow = row;
             document.getElementById("qrpopup").style.display = "block";
@@ -145,6 +145,11 @@ var app = {
         document.querySelector('.go-successCB').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
             db.transaction(queryDB, errorCB);
+        });
+
+        //goPopup() shows the popup after tapping a row in table
+        document.querySelector('.go-popup').addEventListener('click', function() {
+            goPopup(tmpArgs);
         });
     }
 };
