@@ -38,6 +38,7 @@ var app = {
         document.addEventListener("deviceready", onDeviceReady, false);
 
         var currentRow;
+        var tmpArgs;
         // Populate the database
          //
         function populateDB(tx) {
@@ -59,7 +60,9 @@ var app = {
             var tblText = '<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th></tr>';
             var len = results.rows.length;
             for (var i = 0; i < len; i++) {
-                var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
+                //var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
+                tmpArgs = "";
+                tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
                 //tblText += '<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
                 tblText += '<tr class="go-popup"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
                 }
