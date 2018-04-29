@@ -98,6 +98,25 @@ var app = {
             tx.executeSql('INSERT INTO DEMO (name,number) VALUES ("' +document.getElementById("txtName").value +'","'+document.getElementById("txtNumber").value+'")');
         }
 
+        //goInsert()
+        document.querySelector('.go-insert').addEventListener('click', function() {
+            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+            db.transaction(insertDB, errorCB, successCB);
+        });
+
+        //goSearch()
+        document.querySelector('.go-search').addEventListener('click', function() {
+            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+            db.transaction(searchQueryDB, errorCB);
+        });
+
+        //goDelete()
+        document.querySelector('.go-delete').addEventListener('click', function() {
+            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+            db.transaction(deleteRow, errorCB);
+            document.getElementById('qrpopup').style.display='none';
+        });
+
         // //Show the popup after tapping a row in table
         function goPopup(row,rowname,rownum) {
             currentRow = row;
@@ -110,13 +129,6 @@ var app = {
             tx.executeSql('UPDATE DEMO SET name ="' + document.getElementById("editNameBox").value + '", number= "'+document.getElementById("editNumberBox").value + '" WHERE id = ' + currentRow, [], queryDB, errorCB);
         }
 
-        //goDelete()
-        document.querySelector('.go-delete').addEventListener('click', function() {
-            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-            db.transaction(deleteRow, errorCB);
-            document.getElementById('qrpopup').style.display='none';
-        });
-
         //goEdit()
         document.querySelector('.go-edit').addEventListener('click', function() {
             var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
@@ -127,18 +139,6 @@ var app = {
         //#discard
         document.querySelector('#discard').addEventListener('click', function() {
             document.getElementById('qrpopup').style.display='none';
-        });
-
-        //goInsert()
-        document.querySelector('.go-insert').addEventListener('click', function() {
-            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-            db.transaction(insertDB, errorCB, successCB);
-        });
-
-        //goSearch()
-        document.querySelector('.go-search').addEventListener('click', function() {
-            var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-            db.transaction(searchQueryDB, errorCB);
         });
 
         //successCB()
