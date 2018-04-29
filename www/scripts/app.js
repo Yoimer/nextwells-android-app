@@ -89,10 +89,10 @@ var app = {
 
         //  // Cordova is ready
         // //
-        // function onDeviceReady() {
-        //   var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-        //   db.transaction(populateDB, errorCB, successCB);
-        // }
+        function onDeviceReady() {
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(populateDB, errorCB, successCB);
+        }
 
         //Insert query
         //
