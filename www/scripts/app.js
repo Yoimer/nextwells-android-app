@@ -80,13 +80,6 @@ var app = {
           alert("Error processing SQL: "+err.code);
         }
 
-        // Transaction success callback
-        //
-        function successCB() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(queryDB, errorCB);
-        }
-
         //  // Cordova is ready
         // //
         function onDeviceReady() {
@@ -99,23 +92,6 @@ var app = {
         function insertDB(tx) {
           tx.executeSql('INSERT INTO DEMO (name,number) VALUES ("' +document.getElementById("txtName").value
           +'","'+document.getElementById("txtNumber").value+'")');
-        }
-
-        function goInsert() {
-          //onDeviceReady();
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(insertDB, errorCB, successCB);
-        }
-
-        function goSearch() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(searchQueryDB, errorCB);
-        }
-
-        function goDelete() {
-           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-           db.transaction(deleteRow, errorCB);
-           document.getElementById('qrpopup').style.display='none';
         }
 
         //Show the popup after tapping a row in table
@@ -132,6 +108,13 @@ var app = {
           '", number= "'+document.getElementById("editNumberBox").value+ '" WHERE id = '
           + currentRow, [], queryDB, errorCB);
         }
+
+        function goDelete() {
+           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+           db.transaction(deleteRow, errorCB);
+           document.getElementById('qrpopup').style.display='none';
+        }
+
         function goEdit() {
           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(editRow, errorCB);
@@ -140,6 +123,25 @@ var app = {
 
         function goDiscard() {
           document.getElementById('qrpopup').style.display='none';
+        }
+
+
+        function goInsert() {
+          //onDeviceReady();
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+          db.transaction(insertDB, errorCB, successCB);
+        }
+
+        function goSearch() {
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+          db.transaction(searchQueryDB, errorCB);
+        }
+
+        // Transaction success callback
+        //
+        function successCB() {
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+          db.transaction(queryDB, errorCB);
         }
 
         //inputs handler
