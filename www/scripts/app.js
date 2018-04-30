@@ -145,7 +145,8 @@ var app = {
 
         //goInsert();
         document.querySelector('.go-insert').addEventListener('click', function() {
-          console.out("currentRow: " + currentRow);
+          //console.out("currentRow: " + currentRow);
+          alert("currentRow: " + currentRow);
           goInsert();
         });
 
