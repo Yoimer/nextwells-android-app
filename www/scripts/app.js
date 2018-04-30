@@ -125,7 +125,6 @@ var app = {
           document.getElementById('qrpopup').style.display='none';
         }
 
-
         function goInsert() {
           //onDeviceReady();
           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
@@ -175,7 +174,7 @@ var app = {
         document.querySelector('#discard').addEventListener('click', function() {
           goDiscard();
         });
-
+    }
 };
 
 app.initialize();
