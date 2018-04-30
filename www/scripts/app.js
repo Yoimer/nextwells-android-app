@@ -89,7 +89,6 @@ var app = {
         //  // Cordova is ready
         // //
         function onDeviceReady() {
-          console.log(currentRow);
           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(populateDB, errorCB, successCB);
         }
@@ -146,6 +145,7 @@ var app = {
 
         //goInsert();
         document.querySelector('.go-insert').addEventListener('click', function() {
+          console.out("currentRow: " + currentRow);
           goInsert();
         });
 
