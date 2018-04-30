@@ -38,13 +38,13 @@ var app = {
         document.addEventListener("deviceready", onDeviceReady, false);
 
         var currentRow;
-        // Populate the phone_gap
+        // Populate the Database
         //
         function populateDB(tx) {
           tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT, name,number)');
         }
 
-        // Query the phone_gap
+        // Query the Database
         //
         function queryDB(tx) {
           tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
@@ -83,14 +83,14 @@ var app = {
         // Transaction success callback
         //
         function successCB() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(queryDB, errorCB);
         }
 
         //  // Cordova is ready
         // //
         function onDeviceReady() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(populateDB, errorCB, successCB);
         }
 
@@ -103,17 +103,17 @@ var app = {
 
         function goInsert() {
           //onDeviceReady();
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(insertDB, errorCB, successCB);
         }
 
         function goSearch() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(searchQueryDB, errorCB);
         }
 
         function goDelete() {
-           var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
            db.transaction(deleteRow, errorCB);
            document.getElementById('qrpopup').style.display='none';
         }
@@ -133,7 +133,7 @@ var app = {
           + currentRow, [], queryDB, errorCB);
         }
         function goEdit() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
           db.transaction(editRow, errorCB);
           document.getElementById('qrpopup').style.display='none';
         }
