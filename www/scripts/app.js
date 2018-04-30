@@ -144,9 +144,9 @@ var app = {
         //inputs handler
 
         // //goInsert();
-        // document.querySelector('.go-insert').addEventListener('click', function() {
-        //   goInsert();
-        // });
+        document.querySelector('.go-insert').addEventListener('click', function() {
+          goInsert();
+        });
 
         // //goSearch()
         // document.querySelector('.go-search').addEventListener('click', function() {
