@@ -38,13 +38,14 @@ var app = {
         document.addEventListener("deviceready", onDeviceReady, false);
 
         var currentRow;
-        // Populate the Database
+
+        // Populate the phone_gap
         //
         function populateDB(tx) {
           tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT, name,number)');
         }
 
-        // Query the Database
+        // Query the phone_gap
         //
         function queryDB(tx) {
           tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
@@ -80,18 +81,42 @@ var app = {
           alert("Error processing SQL: "+err.code);
         }
 
+        // Transaction success callback
+        //
+        function successCB() {
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(queryDB, errorCB);
+        }
+
         //  // Cordova is ready
         // //
-        function onDeviceReady() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(populateDB, errorCB, successCB);
-        }
+        // function onDeviceReady() {
+        //   var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+        //   db.transaction(populateDB, errorCB, successCB);
+        // }
 
         //Insert query
         //
         function insertDB(tx) {
           tx.executeSql('INSERT INTO DEMO (name,number) VALUES ("' +document.getElementById("txtName").value
           +'","'+document.getElementById("txtNumber").value+'")');
+        }
+
+        function goInsert() {
+          //onDeviceReady();
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(insertDB, errorCB, successCB);
+        }
+
+        function goSearch() {
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(searchQueryDB, errorCB);
+        }
+
+        function goDelete() {
+           var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+           db.transaction(deleteRow, errorCB);
+           document.getElementById('qrpopup').style.display='none';
         }
 
         //Show the popup after tapping a row in table
@@ -108,39 +133,14 @@ var app = {
           '", number= "'+document.getElementById("editNumberBox").value+ '" WHERE id = '
           + currentRow, [], queryDB, errorCB);
         }
-
-        function goDelete() {
-           var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-           db.transaction(deleteRow, errorCB);
-           document.getElementById('qrpopup').style.display='none';
-        }
-
         function goEdit() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
           db.transaction(editRow, errorCB);
           document.getElementById('qrpopup').style.display='none';
         }
 
         function goDiscard() {
           document.getElementById('qrpopup').style.display='none';
-        }
-
-        function goInsert() {
-          //onDeviceReady();
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(insertDB, errorCB, successCB);
-        }
-
-        function goSearch() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(searchQueryDB, errorCB);
-        }
-
-        // Transaction success callback
-        //
-        function successCB() {
-          var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-          db.transaction(queryDB, errorCB);
         }
 
         //inputs handler
