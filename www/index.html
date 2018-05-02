@@ -28,9 +28,11 @@
 </head>
 
 <body>
-    <h1>NextWells App Version 1.2</h1>
+    <h1>NextWells App Version 1.3</h1>
     <p>Local Database</p>
-    <div id="qrpopup" > //The hidden div tag for implementing the popup
+
+    <!-- The hidden div tag for implementing the popup -->
+    <div id="qrpopup" > 
             <hr/>
             <input type="text" id="editNameBox"><br>
             <input type="text" id="editNumberBox"><br>
@@ -39,10 +41,13 @@
             <button onclick="document.getElementById('qrpopup').style.display='none';">Discard</button>
     </div>
 
+    <!-- Data entry -->
     <div>
         Name<input type="text" value="" id="txtName">
         Number<input type="text" value="" id="txtNumber"><hr/>
     </div>
+
+    <!-- Insert - Search - Show All buttons -->
     <div id="tblDiv"></div>
     <div style="text-align: center">
         <button onclick="goInsert()">Insert</button>
@@ -50,21 +55,21 @@
         <button onclick="successCB()">Show All</button>
     </div>
 
+    <!-- Calendar form section -->
     <table class="ds_box" cellpadding="0" cellspacing="0" id="ds_conclass" style="display: none;">
         <tr>
             <td id="ds_calclass"></td>
         </tr>
     </table>
-
     <div class="form-center">
         <form name="myForm" action="" method="post">
             <div>
-                  <b>Example Form</b><br/>
-                  Please input a date: <input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
+                  <b>Please tap to pick a date and press <em>Search</em> button</b><input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
             </div>
         </form>
     </div>
 
+    <!-- JavaScript section-->
     <script type="text/javascript" charset="utf-8">
 
         // Wait for Cordova to load
@@ -146,9 +151,11 @@
               mm = '0'+ mm;
            }
            today = dd +'-' + mm + '-' + yyyy;
-           //var actual_date = new Date;
-          // tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '")');
            tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
+
+           // clean text data entry fields
+           document.getElementById("txtName").value = '';
+           document.getElementById("txtNumber").value = '';
         }
 
         function goInsert() {
@@ -187,6 +194,8 @@
           db.transaction(editRow, errorCB);
           document.getElementById('qrpopup').style.display='none';
         }
+
+        /////////////////Calendar//////////////////////////////////////////////////////////
 
         // Project: Dynamic Date Selector (DtTvB) - 2006-03-16
         // Script featured on JavaScript Kit- http://www.javascriptkit.com
@@ -346,19 +355,6 @@
         // A function to show the calendar.
         // When user click on the date, it will set the content of t.
         function ds_sh(t) {
-
-            // document.querySelector('.form-center').addEventListener('submit', function() {
-            //     var x = document.forms["myForm"]["date"].value;
-            //     if (x == "") {
-            //         alert("Values can not be empty");
-            //         return false;
-            //     } else {
-            //         //alert("Values entered correctly");
-            //         alert(x);
-            //         //goSearch();
-            //     }
-            //  });
-
             // Set the element to set...
             ds_element = t;
             // Make a new date, and set the current month and year.
@@ -458,17 +454,6 @@
         }
 
     </script>
-
-<!--     <div class="form-center">
-        <form name="myForm" action="" method="post">
-            <div>
-                  <b>Example Form</b><br/>
-                  Please input a date: <input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
-                  Please input another date: <input onclick="ds_sh(this);" name="date2" readonly="readonly" style="cursor: text" /><br />
-                  <input type="submit" value="Submit" />
-            </div>
-        </form>
-    </div> -->
 
   </body>
 
