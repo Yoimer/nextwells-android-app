@@ -56,6 +56,15 @@
         </tr>
     </table>
 
+    <div class="form-center">
+        <form name="myForm" action="" method="post">
+            <div>
+                  <b>Example Form</b><br/>
+                  Please input a date: <input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
+            </div>
+        </form>
+    </div>
+
     <script type="text/javascript" charset="utf-8">
 
         // Wait for Cordova to load
@@ -78,7 +87,9 @@
 
         function searchQueryDB(tx) {
            //tx.executeSql("SELECT * FROM DEMO where name like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
-           tx.executeSql("SELECT * FROM DEMO where date like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
+           tx.executeSql("SELECT * FROM DEMO where date like ('%" + document.forms["myForm"]["date"].value + "%')", [], querySuccess, errorCB);
+           // cleans form data
+           document.forms["myForm"]["date"].value = ' ';
         }
         // Query the success callback
         //
@@ -335,6 +346,19 @@
         // A function to show the calendar.
         // When user click on the date, it will set the content of t.
         function ds_sh(t) {
+
+            // document.querySelector('.form-center').addEventListener('submit', function() {
+            //     var x = document.forms["myForm"]["date"].value;
+            //     if (x == "") {
+            //         alert("Values can not be empty");
+            //         return false;
+            //     } else {
+            //         //alert("Values entered correctly");
+            //         alert(x);
+            //         //goSearch();
+            //     }
+            //  });
+
             // Set the element to set...
             ds_element = t;
             // Make a new date, and set the current month and year.
@@ -435,14 +459,16 @@
 
     </script>
 
-    <form action="" method="post">
-        <div>
-              <b>Example Form</b><br/>
-              Please input a date: <input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
-              Please input another date: <input onclick="ds_sh(this);" name="date2" readonly="readonly" style="cursor: text" /><br />
-              <input type="submit" value="Submit" />
-        </div>
-    </form>
+<!--     <div class="form-center">
+        <form name="myForm" action="" method="post">
+            <div>
+                  <b>Example Form</b><br/>
+                  Please input a date: <input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
+                  Please input another date: <input onclick="ds_sh(this);" name="date2" readonly="readonly" style="cursor: text" /><br />
+                  <input type="submit" value="Submit" />
+            </div>
+        </form>
+    </div> -->
 
   </body>
 
