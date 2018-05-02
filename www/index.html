@@ -64,7 +64,8 @@
     <div class="form-center">
         <form name="myForm" action="" method="post">
             <div>
-                  <b>Please tap to pick a date and press <em>Search</em> button</b><input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br />
+                  <hr/>
+                  <b>Please tap to pick a date and press <em>Search</em> button</b><input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
             </div>
         </form>
     </div>
@@ -91,7 +92,12 @@
         }
 
         function searchQueryDB(tx) {
-           //tx.executeSql("SELECT * FROM DEMO where name like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
+
+            // checks for empty date
+            if (document.forms["myForm"]["date"].value === " ") {
+                alert("Please pick a date from date picker, empty values are not allowed");
+                return;
+            }
            tx.executeSql("SELECT * FROM DEMO where date like ('%" + document.forms["myForm"]["date"].value + "%')", [], querySuccess, errorCB);
            // cleans form data
            document.forms["myForm"]["date"].value = ' ';
@@ -101,6 +107,11 @@
         function querySuccess(tx, results) {
            var tblText='<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
            var len = results.rows.length;
+           //abort when picked date has no entries in DB
+           if (len === 0) {
+            alert('The date selected has no entries in db. Please, pick another one!');
+            return;
+           }
            for (var i = 0; i < len; i++) {
               //var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
               var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number + "','" + results.rows.item(i).date + "'" ;
@@ -151,6 +162,12 @@
               mm = '0'+ mm;
            }
            today = dd +'-' + mm + '-' + yyyy;
+
+           // checks empty data entry values
+           if (document.getElementById("txtName").value === "" || document.getElementById("txtNumber").value === "" ) {
+                alert("Empty values are not allowed");
+                return;
+           }
            tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
 
            // clean text data entry fields
