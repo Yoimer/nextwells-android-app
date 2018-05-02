@@ -133,7 +133,7 @@
            if(mm < 10) {
               mm = '0'+ mm;
            }
-           today = dd +'/' + mm + '/' + yyyy;
+           today = dd +'-' + mm + '-' + yyyy;
            //var actual_date = new Date;
           // tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '")');
            tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
@@ -410,7 +410,10 @@
             d2 = '00' + d;
             d2 = d2.substr(d2.length - 2);
             // YYYY-MM-DD
-            return y + '-' + m2 + '-' + d2;
+            //return y + '-' + m2 + '-' + d2;
+            // DD-MM-YYYYY
+            //return d2 + '-' + m2 + '-' + y;
+            return d2 + '-' + m2 + '-' + y;
         }
 
         // When the user clicks the day.
