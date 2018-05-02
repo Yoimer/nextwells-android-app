@@ -77,7 +77,8 @@
         }
 
         function searchQueryDB(tx) {
-           tx.executeSql("SELECT * FROM DEMO where name like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
+           //tx.executeSql("SELECT * FROM DEMO where name like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
+           tx.executeSql("SELECT * FROM DEMO where date like ('%"+ document.getElementById("txtName").value + "%')", [], querySuccess, errorCB);
         }
         // Query the success callback
         //
