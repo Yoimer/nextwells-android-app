@@ -53,6 +53,7 @@
         <button onclick="goInsert()">Insert</button>
         <button onclick="goSearch()">Search</button>
         <button onclick="successCB()">Show All</button>
+        <button onclick="fetchData()">Fetch Data</button>
     </div>
 
     <!-- Calendar form section -->
@@ -94,10 +95,10 @@
         function searchQueryDB(tx) {
 
             // checks for empty date
-            if (document.forms["myForm"]["date"].value === " ") {
-                alert("Please pick a date from date picker, empty values are not allowed");
-                return;
-            }
+            // if (document.forms["myForm"]["date"].value === " ") {
+            //     alert("Please pick a date from date picker, empty values are not allowed");
+            //     return;
+            // }
            tx.executeSql("SELECT * FROM DEMO where date like ('%" + document.forms["myForm"]["date"].value + "%')", [], querySuccess, errorCB);
            // cleans form data
            document.forms["myForm"]["date"].value = ' ';
@@ -108,10 +109,10 @@
            var tblText='<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
            var len = results.rows.length;
            //abort when picked date has no entries in DB
-           if (len === 0) {
-            alert('The date selected has no entries in db. Please, pick another one!');
-            return;
-           }
+           // if (len === 0) {
+           //  alert('The date selected has no entries in db. Please, pick another one!');
+           //  return;
+           // }
            for (var i = 0; i < len; i++) {
               //var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
               var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number + "','" + results.rows.item(i).date + "'" ;
@@ -164,10 +165,10 @@
            today = dd +'-' + mm + '-' + yyyy;
 
            // checks empty data entry values
-           if (document.getElementById("txtName").value === "" || document.getElementById("txtNumber").value === "" ) {
-                alert("Empty values are not allowed");
-                return;
-           }
+           // if (document.getElementById("txtName").value === "" || document.getElementById("txtNumber").value === "" ) {
+           //      alert("Empty values are not allowed");
+           //      return;
+           // }
            tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
 
            // clean text data entry fields
@@ -212,6 +213,22 @@
           document.getElementById('qrpopup').style.display='none';
         }
 
+        ///////////////////Fetch data from server///////////////////
+
+        function fetchData() {
+          var url = "http://phpcourse-2.000webhostapp.com/test.php"
+          var request = new XMLHttpRequest();
+          request.open('GET', url);
+          //console.log(request.open('GET', url));
+          //request.responseType = 'text';
+          request.responseType = 'text';
+          request.onload = function() {
+              //poemDisplay.textContent = request.response;
+              //console.log(request.response);
+              alert(request.response);
+          };
+          request.send();
+        };
         /////////////////Calendar//////////////////////////////////////////////////////////
 
         // Project: Dynamic Date Selector (DtTvB) - 2006-03-16
