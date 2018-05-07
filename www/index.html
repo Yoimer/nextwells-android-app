@@ -215,20 +215,37 @@
 
         ///////////////////Fetch data from server///////////////////
 
+        // function fetchData() {
+        //   var url = "http://phpcourse-2.000webhostapp.com/test.php"
+        //   var request = new XMLHttpRequest();
+        //   request.open('GET', url);
+        //   //console.log(request.open('GET', url));
+        //   //request.responseType = 'text';
+        //   request.responseType = 'text';
+        //   request.onload = function() {
+        //       //poemDisplay.textContent = request.response;
+        //       //console.log(request.response);
+        //       alert(request.response);
+        //   };
+        //   request.send();
+        // };
+
         function fetchData() {
-          var url = "http://phpcourse-2.000webhostapp.com/test.php"
-          var request = new XMLHttpRequest();
-          request.open('GET', url);
-          //console.log(request.open('GET', url));
-          //request.responseType = 'text';
-          request.responseType = 'text';
-          request.onload = function() {
-              //poemDisplay.textContent = request.response;
-              //console.log(request.response);
+            var url = "http://phpcourse-2.000webhostapp.com/test.php"
+            var request = new XMLHttpRequest();
+            // connected
+            request.onload = function() { 
+              alert("Connected!");
               alert(request.response);
-          };
-          request.send();
-        };
+            }
+            // no internet
+            request.onerror = function() { 
+              alert("Not Connected"); 
+            }
+            request.open("GET",url,true);
+            request.send();
+       }
+
         /////////////////Calendar//////////////////////////////////////////////////////////
 
         // Project: Dynamic Date Selector (DtTvB) - 2006-03-16
