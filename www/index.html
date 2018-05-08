@@ -50,7 +50,8 @@
     <!-- Insert - Search - Show All buttons -->
     <div id="tblDiv"></div>
     <div style="text-align: center">
-        <button onclick="goInsert()">Insert</button>
+        <!-- goInsert(0) means insert value from insert button-->
+        <button onclick="goInsert(1)">Insert</button>
         <button onclick="goSearch()">Search</button>
         <button onclick="successCB()">Show All</button>
         <button onclick="fetchData()">Fetch Data</button>
@@ -79,6 +80,7 @@
         document.addEventListener("deviceready", onDeviceReady, false);
 
         var currentRow;
+        var value;
 
         // Populate the phone_gap
         //
@@ -94,11 +96,6 @@
 
         function searchQueryDB(tx) {
 
-            // checks for empty date
-            // if (document.forms["myForm"]["date"].value === " ") {
-            //     alert("Please pick a date from date picker, empty values are not allowed");
-            //     return;
-            // }
            tx.executeSql("SELECT * FROM DEMO where date like ('%" + document.forms["myForm"]["date"].value + "%')", [], querySuccess, errorCB);
            // cleans form data
            document.forms["myForm"]["date"].value = ' ';
@@ -108,19 +105,13 @@
         function querySuccess(tx, results) {
            var tblText='<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
            var len = results.rows.length;
-           //abort when picked date has no entries in DB
-           // if (len === 0) {
-           //  alert('The date selected has no entries in db. Please, pick another one!');
-           //  return;
-           // }
+
            for (var i = 0; i < len; i++) {
-              //var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number+"'";
-              var tmpArgs=results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number + "','" + results.rows.item(i).date + "'" ;
-              //tblText +='<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number +'</td></tr>';
+              var tmpArgs = results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number + "','" + results.rows.item(i).date + "'" ;
               tblText +='<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number + '</td><td>' + results.rows.item(i).date + '</td></tr>';
            }
            tblText +="</table>";
-           document.getElementById("tblDiv").innerHTML =tblText;
+           document.getElementById("tblDiv").innerHTML = tblText;
         }
 
         //Delete query
@@ -131,7 +122,7 @@
         // Transaction error callback
         //
         function errorCB(err) {
-           alert("Error processing SQL: "+err.code);
+           alert("Error processing SQL: " + err.code);
         }
 
         // Transaction success callback
@@ -164,22 +155,39 @@
            }
            today = dd +'-' + mm + '-' + yyyy;
 
-           // checks empty data entry values
-           // if (document.getElementById("txtName").value === "" || document.getElementById("txtNumber").value === "" ) {
-           //      alert("Empty values are not allowed");
-           //      return;
-           // }
-           tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
+           switch (value) {
+            case 0:
+                tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
+                // clean text data entry fields
+                document.getElementById("txtName").value = '';
+                document.getElementById("txtNumber").value = '';
+            break;
+            case 1:
+                console.log("kkkkk");
+            break;    
+           }
 
-           // clean text data entry fields
-           document.getElementById("txtName").value = '';
-           document.getElementById("txtNumber").value = '';
+
         }
 
-        function goInsert() {
-          //onDeviceReady();
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(insertDB, errorCB, successCB);
+        function goInsert(task) {
+
+        // for switch case:
+        // 0 means insert value from insert button (code remains the same until now)
+        // 1 means insert value from remote db
+          switch (task) {
+            case 0:
+                //onDeviceReady();
+                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+                db.transaction(insertDB, errorCB, successCB);
+                break;
+            case 1:
+                console.log("Value of 1");
+                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+                value = task;
+                db.transaction(insertDB, errorCB, successCB);
+                break;
+          }
         }
 
         function goSearch() {
