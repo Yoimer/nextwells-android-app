@@ -51,10 +51,12 @@
     <div id="tblDiv"></div>
     <div style="text-align: center">
         <!-- goInsert(0) means insert value from insert button-->
-        <button onclick="goInsert(1)">Insert</button>
+        <button onclick="goInsert(0)">Insert</button>
         <button onclick="goSearch()">Search</button>
         <button onclick="successCB()">Show All</button>
-        <button onclick="fetchData()">Fetch Data</button>
+        <!-- goInsert(1) means insert value from internet-->
+        <!-- <button onclick="fetchData()">Fetch Data</button> -->
+        <button onclick="goInsert(1)">Fetch Data</button>
     </div>
 
     <!-- Calendar form section -->
@@ -80,7 +82,8 @@
         document.addEventListener("deviceready", onDeviceReady, false);
 
         var currentRow;
-        var value;
+        var value = -1;
+        var response = '';
 
         // Populate the phone_gap
         //
@@ -103,14 +106,14 @@
         // Query the success callback
         //
         function querySuccess(tx, results) {
-           var tblText='<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
+           var tblText = '<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
            var len = results.rows.length;
 
            for (var i = 0; i < len; i++) {
               var tmpArgs = results.rows.item(i).id + ",'" + results.rows.item(i).name + "','" + results.rows.item(i).number + "','" + results.rows.item(i).date + "'" ;
-              tblText +='<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number + '</td><td>' + results.rows.item(i).date + '</td></tr>';
+              tblText += '<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id +'</td><td>' + results.rows.item(i).name +'</td><td>' + results.rows.item(i).number + '</td><td>' + results.rows.item(i).date + '</td></tr>';
            }
-           tblText +="</table>";
+           tblText += "</table>";
            document.getElementById("tblDiv").innerHTML = tblText;
         }
 
@@ -161,17 +164,17 @@
                 // clean text data entry fields
                 document.getElementById("txtName").value = '';
                 document.getElementById("txtNumber").value = '';
+                ////value = -1;
             break;
             case 1:
                 console.log("kkkkk");
-            break;    
+                response = fetchData();
+                ////value = -1;
+            break;
            }
-
-
         }
 
         function goInsert(task) {
-
         // for switch case:
         // 0 means insert value from insert button (code remains the same until now)
         // 1 means insert value from remote db
@@ -179,6 +182,7 @@
             case 0:
                 //onDeviceReady();
                 var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+                value = task;
                 db.transaction(insertDB, errorCB, successCB);
                 break;
             case 1:
@@ -223,35 +227,30 @@
 
         ///////////////////Fetch data from server///////////////////
 
-        // function fetchData() {
-        //   var url = "http://phpcourse-2.000webhostapp.com/test.php"
-        //   var request = new XMLHttpRequest();
-        //   request.open('GET', url);
-        //   //console.log(request.open('GET', url));
-        //   //request.responseType = 'text';
-        //   request.responseType = 'text';
-        //   request.onload = function() {
-        //       //poemDisplay.textContent = request.response;
-        //       //console.log(request.response);
-        //       alert(request.response);
-        //   };
-        //   request.send();
-        // };
-
         function fetchData() {
             var url = "http://phpcourse-2.000webhostapp.com/test.php"
             var request = new XMLHttpRequest();
-            // connected
-            request.onload = function() { 
-              alert("Connected!");
-              alert(request.response);
-            }
-            // no internet
-            request.onerror = function() { 
-              alert("Not Connected"); 
-            }
-            request.open("GET",url,true);
+            request.open("GET",url,false);
             request.send();
+            if ((request.readyState === 4) && (request.status === 200)) {
+              return request.response;
+            }
+
+
+
+
+            // // connected
+            // request.onload = function() { 
+            //   alert("Connected!");
+            //   alert(request.response);
+            //   response = request.response;
+            // }
+            // // no internet
+            // request.onerror = function() { 
+            //   alert("Not Connected"); 
+            // }
+            // request.open("GET",url,false);
+            // request.send();
        }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
