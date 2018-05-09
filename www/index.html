@@ -164,12 +164,25 @@
                 // clean text data entry fields
                 document.getElementById("txtName").value = '';
                 document.getElementById("txtNumber").value = '';
-                ////value = -1;
+                value = -1;
             break;
             case 1:
-                console.log("kkkkk");
                 response = fetchData();
-                ////value = -1;
+                //string on response should be like this
+                //#test-12345?
+                //get test
+                var name = response.substring( (response.indexOf('#') + 1), (response.indexOf('-')) );
+                document.getElementById("txtName").value = name;
+                //get 12345
+                var number = response.substring( (response.indexOf('-') + 1), (response.indexOf('?')) );
+                document.getElementById("txtNumber").value = number;
+
+                //inserts name and number in local db
+                tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
+                // clean text data entry fields
+                document.getElementById("txtName").value = '';
+                document.getElementById("txtNumber").value = '';
+                value = -1;
             break;
            }
         }
@@ -233,24 +246,9 @@
             request.open("GET",url,false);
             request.send();
             if ((request.readyState === 4) && (request.status === 200)) {
+              alert("Connected to Internet");
               return request.response;
             }
-
-
-
-
-            // // connected
-            // request.onload = function() { 
-            //   alert("Connected!");
-            //   alert(request.response);
-            //   response = request.response;
-            // }
-            // // no internet
-            // request.onerror = function() { 
-            //   alert("Not Connected"); 
-            // }
-            // request.open("GET",url,false);
-            // request.send();
        }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
