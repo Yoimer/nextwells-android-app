@@ -28,8 +28,9 @@
 </head>
 
 <body>
-    <h1>NextWells App Version 1.4</h1>
-    <p>Local Database and Remote Database</p>
+    <h1>NextWells App Version 1.4.1</h1>
+    <!-- <p>Local Database and Remote Database</p> -->
+    <p>New Daily Operational Report</p>
 
     <!-- The hidden div tag for implementing the popup -->
     <div id="qrpopup" > 
@@ -42,35 +43,104 @@
     </div>
 
     <!-- Data entry -->
-    <div>
+    <div id="data-input">
         <dl>
-            <dt>Name</dt>
-                <dd><input type="text" value="" id="txtName"></dd>
-                <br/><br/>
-            <dt>Number</dt>
-                <dd><input type="text" value="" id="txtNumber"></dd>
-                <br/><br/>
-            <dt>Number</dt>
-                <dd><input type="text" value="" id="txtNumber"></dd>
+            <dt>Additional ope com</dt>
+            <dd><input type="text" value="" id="additional_ope"></dd>
             <br/><br/>
-            <dt>Number</dt>
-                <dd><input type="text" value="" id="txtNumber"></dd>
+            <dt>Process Safety Rem</dt>
+            <dd><input type="text" value="" id="process_saf"></dd>
             <br/><br/>
-            <dt>Number</dt>
-                <dd><input type="text" value="" id="txtNumber"></dd>
+            <dt>REMARKS for Next OP</dt>
+            <dd><input type="text" value="" id="remarks_for"></dd>
+            <br/><br/>
+            <dt>HSE SUMMARY</dt>
+            <dd><input type="text" value="" id="hse_summary"></dd>
+            <br/><br/>
+            <hr/>
+            <dt>H 00:00</dt>
+            <dd><input type="text" value="" id="h_00"></dd>
+            <br/><br/>
+            <dt>H 01:00</dt>
+            <dd><input type="text" value="" id="h_01"></dd>
+            <br/><br/>
+            <dt>H 02:00</dt>
+            <dd><input type="text" value="" id="h_02"></dd>
+            <br/><br/>
+            <dt>H 03:00</dt>
+            <dd><input type="text" value="" id="h_03"></dd>
+            <br/><br/>
+            <dt>H 04:00</dt>
+            <dd><input type="text" value="" id="h_04"></dd>
+            <br/><br/>
+            <dt>H 05:00</dt>
+            <dd><input type="text" value="" id="h_05"></dd>
+            <br/><br/>
+            <dt>H 06:00</dt>
+            <dd><input type="text" value="" id="h_06"></dd>
+            <br/><br/>
+            <dt>H 07:00</dt>
+            <dd><input type="text" value="" id="h_07"></dd>
+            <br/><br/>
+            <dt>H 08:00</dt>
+            <dd><input type="text" value="" id="h_08"></dd>
+            <br/><br/>
+            <dt>H 09:00</dt>
+            <dd><input type="text" value="" id="h_09"></dd>
+            <br/><br/>
+            <dt>H 10:00</dt>
+            <dd><input type="text" value="" id="h_10"></dd>
+            <br/><br/>
+            <dt>H 11:00</dt>
+            <dd><input type="text" value="" id="h_11"></dd>
+            <br/><br/>
+            <dt>H 12:00</dt>
+            <dd><input type="text" value="" id="h_12"></dd>
+            <br/><br/>
+            <dt>H 13:00</dt>
+            <dd><input type="text" value="" id="h_13"></dd>
+            <br/><br/>
+            <dt>H 14:00</dt>
+            <dd><input type="text" value="" id="h_14"></dd>
+            <br/><br/>
+            <dt>H 15:00</dt>
+            <dd><input type="text" value="" id="h_15"></dd>
+            <br/><br/>
+            <dt>H 16:00</dt>
+            <dd><input type="text" value="" id="h_16"></dd>
+            <br/><br/>
+            <dt>H 17:00</dt>
+            <dd><input type="text" value="" id="h_17"></dd>
+            <br/><br/>
+            <dt>H 18:00</dt>
+            <dd><input type="text" value="" id="h_18"></dd>
+            <br/><br/>
+            <dt>H 19:00</dt>
+            <dd><input type="text" value="" id="h_19"></dd>
+            <br/><br/>
+            <dt>H 20:00</dt>
+            <dd><input type="text" value="" id="h_20"></dd>
+            <br/><br/>
+            <dt>H 21:00</dt>
+            <dd><input type="text" value="" id="h_21"></dd>
+            <br/><br/>
+            <dt>H 22:00</dt>
+            <dd><input type="text" value="" id="h_22"></dd>
+            <br/><br/>
+            <dt>H 23:00</dt>
+            <dd><input type="text" value="" id="h_23"></dd>
         </dl>
     </div>
 
     <!-- Insert - Search - Show All buttons -->
     <div id="tblDiv"></div>
-    <div style="text-align: center">
+    <div style="text-align: left">
         <!-- goInsert(0) means insert value from insert button-->
         <button onclick="goInsert(0)">Insert</button>
-        <button onclick="goSearch()">Search</button>
-        <button onclick="successCB()">Show All</button>
+        <!-- <button onclick="goSearch()">Search</button> -->
+        <!-- <button onclick="successCB()">Show All</button> -->
         <!-- goInsert(1) means insert value from internet-->
-        <!-- <button onclick="fetchData()">Fetch Data</button> -->
-        <button onclick="goInsert(1)">Fetch Data</button>
+        <!-- <button onclick="goInsert(1)">Fetch Data</button> -->
     </div>
 
     <!-- Calendar form section -->
@@ -83,7 +153,7 @@
         <form name="myForm" action="" method="post">
             <div>
                   <hr/>
-                  <b>Please tap to pick a date and press <em>Search</em> button</b><input onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
+                  <b>Insert any date here</b><input id="date_from_calendar" onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
             </div>
         </form>
     </div>
@@ -102,7 +172,19 @@
         // Populate the phone_gap
         //
         function populateDB(tx) {
-           tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT, name,number,date)');
+           //var tempString = 'INSERT INTO DEMO ' + '(';
+           var tempString = 'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,';
+           var inputs = document.getElementById('data-input').getElementsByTagName('input');
+
+           for (var i = 0; i < inputs.length; i++) {
+                if (i === (inputs.length - 1) ) {
+                    tempString += inputs[i].id + ',' + 'date' + ')';
+                } else {
+                    tempString += inputs[i].id + ',';
+                }
+            }
+            //tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT, name,number,number2,number3,number4,date)');
+            tx.executeSql(tempString);
         }
 
         // Query the phone_gap
@@ -159,6 +241,15 @@
         //Insert query
         //
         function insertDB(tx) {
+           // get any date from calendar
+            var date_from_calendar = document.getElementById('date_from_calendar').value;
+            if (date_from_calendar === "") {
+                alert("Empty date is no allowed ");
+                //force system to stop
+                tx.executeSql("");
+                return;
+            }
+
            //get actual date
            var today = new Date();
            var dd = today.getDate();
@@ -174,11 +265,32 @@
 
            switch (value) {
             case 0:
-                tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
-                // clean text data entry fields
-                document.getElementById("txtName").value = '';
-                document.getElementById("txtNumber").value = '';
-                value = -1;
+            var inputs = document.getElementById('data-input').getElementsByTagName('input');
+
+            // build insert
+            var tempString = 'INSERT INTO DEMO ' + '(';
+            for (var i = 0; i < inputs.length; i++) {
+                if (i === (inputs.length - 1) ) {
+                    tempString += inputs[i].id + ',' + 'date' + ')';
+                } else {
+                    tempString += inputs[i].id + ',';
+                }
+            }
+
+            //build values
+            tempString += ' VALUES ("';
+            for (var i = 0; i < inputs.length; i++) {
+                if(i === (inputs.length - 1) ) {
+                    //tempString += inputs[i].value + '","' + today + '")';
+                    tempString += inputs[i].value + '","' + date_from_calendar + '")';
+                } else {
+                    tempString += inputs[i].value + '","';
+                }
+            }
+
+            tx.executeSql(tempString);
+
+            value = -1;
             break;
             case 1:
                 response = fetchData();
