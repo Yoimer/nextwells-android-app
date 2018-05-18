@@ -128,8 +128,10 @@
             H 23:00</br>
             <textarea rows="4" cols="50" id="h_23" form="usrform"></textarea>
             </br></br>
-            <button onclick="goInsert(0)">Insert</button>
     </div>
+
+    <button onclick="goInsert(0)">Insert</button>
+    <button>Search</button>
 
     <!-- Insert - Search - Show All buttons -->
     <div id="tblDiv"></div>
@@ -149,7 +151,7 @@
         </tr>
     </table>
     <div class="form-center">
-        <form name="myForm" action="" method="post">
+        <form id="calendar" name="myForm" action="" method="post">
             <div>
                   <hr/>
                   <b>Insert any date here</b><input id="date_from_calendar" onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
@@ -173,7 +175,7 @@
         function populateDB(tx) {
            //var tempString = 'INSERT INTO DEMO ' + '(';
            var tempString = 'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,';
-           var inputs = document.getElementById('data-input').getElementsByTagName('input');
+           var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
 
            for (var i = 0; i < inputs.length; i++) {
                 if (i === (inputs.length - 1) ) {
@@ -233,6 +235,9 @@
          // Cordova is ready
         //
         function onDeviceReady() {
+          document.getElementById('data-input').style.display = 'none';
+          document.getElementById('calendar').style.display = 'none';
+
           var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
           db.transaction(populateDB, errorCB, successCB);
         }
@@ -264,7 +269,7 @@
 
            switch (value) {
             case 0:
-            var inputs = document.getElementById('data-input').getElementsByTagName('input');
+            var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
 
             // build insert
             var tempString = 'INSERT INTO DEMO ' + '(';
