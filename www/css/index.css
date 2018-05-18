@@ -1,8 +1,9 @@
 input[type='text'] {
-       border: 1px solid black;
-       width: 200px;
-       margin-left: 10px;
+    border: 1px solid black;
+    width: 200px;
+    /* margin-left: 10px; */
 }
+
 table#t01 {
     width:100%;
 }
@@ -71,6 +72,10 @@ dt {
 dd {
   float: left;
   margin-left: 1em;
+}
+
+#data-input {
+    font-weight: bold;
 }
 
 /*calendar style*/
