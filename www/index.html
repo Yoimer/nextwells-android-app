@@ -323,6 +323,7 @@
         // 1 means insert value from remote db
           switch (task) {
             case 0:
+                document.getElementById('data-input').style.display = 'block';
                 //onDeviceReady();
                 var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
                 value = task;
