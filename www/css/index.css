@@ -123,3 +123,16 @@ dd {
 .ds_cell:hover {
     background-color: #F3F3F3;
 } /* This hover code won't work for IE */
+
+
+/* textarea and calendar*/
+
+/* textarea*/
+#data-input {
+    display: none;
+}
+
+/*calendar*/
+.form-center {
+    display: none;
+}

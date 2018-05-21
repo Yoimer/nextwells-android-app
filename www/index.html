@@ -42,6 +42,22 @@
             <button onclick="document.getElementById('qrpopup').style.display='none';">Discard</button>
     </div>
 
+
+    <!-- Calendar form section -->
+    <table class="ds_box" cellpadding="0" cellspacing="0" id="ds_conclass" style="display: none;">
+        <tr>
+            <td id="ds_calclass"></td>
+        </tr>
+    </table>
+    <div class="form-center">
+        <form id="calendar" name="myForm" action="" method="post">
+            <div>
+                  <hr/>
+                  <b>Insert any date here</b><input id="date_from_calendar" onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
+            </div>
+        </form>
+    </div>
+
     <!-- Data entry -->
     <div id="data-input">
             Additional ope com </br>
@@ -128,10 +144,14 @@
             H 23:00</br>
             <textarea rows="4" cols="50" id="h_23" form="usrform"></textarea>
             </br></br>
+            <!-- goInsert(0)insert value in db from textarea-->
+            <button id="goInsertButton0" onclick="goInsert(0)">Insert</button>
+            <button id="goSearchButton0">Search</button>
     </div>
 
-    <button onclick="goInsert(0)">Insert</button>
-    <button>Search</button>
+    <!-- goInsert(2) shows textarea and calendar-->
+    <button id="goInsertButton2" onclick="goInsert(2)">Insert</button>
+    <button id="goSearchButton2">Search</button>
 
     <!-- Insert - Search - Show All buttons -->
     <div id="tblDiv"></div>
@@ -142,21 +162,6 @@
         <!-- <button onclick="successCB()">Show All</button> -->
         <!-- goInsert(1) means insert value from internet-->
         <!-- <button onclick="goInsert(1)">Fetch Data</button> -->
-    </div>
-
-    <!-- Calendar form section -->
-    <table class="ds_box" cellpadding="0" cellspacing="0" id="ds_conclass" style="display: none;">
-        <tr>
-            <td id="ds_calclass"></td>
-        </tr>
-    </table>
-    <div class="form-center">
-        <form id="calendar" name="myForm" action="" method="post">
-            <div>
-                  <hr/>
-                  <b>Insert any date here</b><input id="date_from_calendar" onclick="ds_sh(this);" name="date" readonly="readonly" style="cursor: text" /><br /><br />
-            </div>
-        </form>
     </div>
 
     <!-- JavaScript section-->
@@ -235,64 +240,57 @@
          // Cordova is ready
         //
         function onDeviceReady() {
-          document.getElementById('data-input').style.display = 'none';
-          document.getElementById('calendar').style.display = 'none';
+          // document.getElementById('data-input').style.display = 'none';
+          // document.getElementById('calendar').style.display = 'none';
 
           var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
           db.transaction(populateDB, errorCB, successCB);
         }
 
         //Insert query
-        //
         function insertDB(tx) {
            // get any date from calendar
-            var date_from_calendar = document.getElementById('date_from_calendar').value;
-            if (date_from_calendar === "") {
-                alert("Empty date is no allowed ");
-                //force system to stop
-                tx.executeSql("");
-                return;
-            }
-
-           //get actual date
-           var today = new Date();
-           var dd = today.getDate();
-           var mm = today.getMonth() + 1;
-           var yyyy = today.getFullYear();
-           if(dd < 10) {
-              dd = '0' + dd;
-           }
-           if(mm < 10) {
-              mm = '0'+ mm;
-           }
-           today = dd +'-' + mm + '-' + yyyy;
+           var date_from_calendar = document.getElementById('date_from_calendar').value;
 
            switch (value) {
+            //saves in db from textareas
             case 0:
             var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
 
-            // build insert
-            var tempString = 'INSERT INTO DEMO ' + '(';
-            for (var i = 0; i < inputs.length; i++) {
-                if (i === (inputs.length - 1) ) {
-                    tempString += inputs[i].id + ',' + 'date' + ')';
-                } else {
-                    tempString += inputs[i].id + ',';
-                }
+            // checks empty date from calendar
+            if(date_from_calendar === "") {
+                alert("Date values can not be empty");
             }
+            // saves data from textarea in db
+            else {
+                // build insert
+                var tempString = 'INSERT INTO DEMO ' + '(';
+                for (var i = 0; i < inputs.length; i++) {
+                    if (i === (inputs.length - 1) ) {
+                        tempString += inputs[i].id + ',' + 'date' + ')';
+                    } else {
+                            tempString += inputs[i].id + ',';
+                        }
+                    }
 
-            //build values
-            tempString += ' VALUES ("';
-            for (var i = 0; i < inputs.length; i++) {
-                if(i === (inputs.length - 1) ) {
-                    //tempString += inputs[i].value + '","' + today + '")';
-                    tempString += inputs[i].value + '","' + date_from_calendar + '")';
-                } else {
-                    tempString += inputs[i].value + '","';
+                    //build values
+                    tempString += ' VALUES ("';
+                    for (var i = 0; i < inputs.length; i++) {
+                        if(i === (inputs.length - 1) ) {
+                            tempString += inputs[i].value + '","' + date_from_calendar + '")';
+                            //clean values
+                            inputs[i].value = "";
+                        } else {
+                            tempString += inputs[i].value + '","';
+                            //clean values
+                            inputs[i].value = "";
+                        }
+                    }
+
+                    tx.executeSql(tempString);
+                    //cleans date from calendar
+                    document.getElementById('date_from_calendar').value = "";
                 }
-            }
-
-            tx.executeSql(tempString);
 
             value = -1;
             break;
@@ -318,22 +316,27 @@
         }
 
         function goInsert(task) {
-        // for switch case:
-        // 0 means insert value from insert button (code remains the same until now)
-        // 1 means insert value from remote db
           switch (task) {
+            // saves data in db from textarea
             case 0:
-                document.getElementById('data-input').style.display = 'block';
-                //onDeviceReady();
                 var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
                 value = task;
                 db.transaction(insertDB, errorCB, successCB);
                 break;
+            // gets data from internet
             case 1:
                 console.log("Value of 1");
                 var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
                 value = task;
                 db.transaction(insertDB, errorCB, successCB);
+                break;
+            // shows textarea and calendar
+            case 2:
+                document.getElementById('data-input').style.display = 'block';
+                document.querySelector('.form-center').style.display = 'block';
+
+                document.getElementById('goSearchButton2').style.display = 'none';
+                document.getElementById('goInsertButton2').style.display = 'none';
                 break;
           }
         }
