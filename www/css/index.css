@@ -136,3 +136,8 @@ dd {
 .form-center {
     display: none;
 }
+
+/*update db */
+.update_insert-search-buttons-textarea {
+    display: none;
+}
