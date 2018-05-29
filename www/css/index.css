@@ -74,7 +74,7 @@ dd {
   margin-left: 1em;
 }
 
-#data-input {
+.data-input {
     font-weight: bold;
 }
 
@@ -128,7 +128,7 @@ dd {
 /* textarea and calendar*/
 
 /* textarea*/
-#data-input {
+.data-input {
     display: none;
 }
 
@@ -139,5 +139,22 @@ dd {
 
 /*update db */
 .update_insert-search-buttons-textarea {
+    display: none;
+}
+
+/*update db */
+.search-home {
+    display: none;
+}
+
+.modify-delete-home {
+    display: none;
+}
+
+.insertdb-home {
+    display: none;
+}
+
+.update-home-buttons {
     display: none;
 }

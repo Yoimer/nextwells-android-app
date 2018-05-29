@@ -28,20 +28,8 @@
 </head>
 
 <body>
-    <h1>NextWells App Version 1.6</h1>
-    <!-- <p>Local Database and Remote Database</p> -->
+    <h1>NextWells App Version 1.7</h1>
     <p>New Daily Operational Report</p>
-
-    <!-- The hidden div tag for implementing the popup -->
-    <div id="qrpopup" > 
-            <hr/>
-            <input type="text" id="editNameBox"><br>
-            <input type="text" id="editNumberBox"><br>
-            <button onclick="goDelete()">Delete</button>
-            <button onclick="goEdit()">Edit</button>
-            <button onclick="document.getElementById('qrpopup').style.display='none';">Discard</button>
-    </div>
-
 
     <!-- Calendar form section -->
     <table class="ds_box" cellpadding="0" cellspacing="0" id="ds_conclass" style="display: none;">
@@ -58,15 +46,9 @@
         </form>
     </div>
 
-    <!-- insert-search-button section -->
-    <div id="insert-search-buttons">
-        <button id="" onclick="goInsert(2)">Insert</button>
-        <button id="" onclick="">Search</button>
-    </div>
-
     <!-- Data entry -->
-    <div id="data-input">
-        </br></br></br></br></br></br></br></br></br></br></br></br>
+    <div class="data-input">
+        <!-- </br></br></br></br></br></br></br></br></br></br></br></br> -->
         Additional ope com </br>
         <textarea rows="4" cols="50" id="additional_ope" form="usrform"></textarea>
         </br></br>
@@ -151,19 +133,25 @@
         H 23:00</br>
         <textarea rows="4" cols="50" id="h_23" form="usrform"></textarea>
         </br></br>
-        <div class="insert-search-buttons-textarea">
-            <!-- goInsert(0)insert value in db from textarea-->
-            <button id="IsEmpty" onclick="IsEmpty()">Insert</button>
-            <!-- goSearch(1) checks if there is data saved in db or not-->
-            <button id="goSearch" onclick="goSearch(1)">Search</button>
-            <button onclick="goHome()">Home</button>
-        </div>
     </div>
 
-    <div class="update_insert-search-buttons-textarea">
-        <button id="" onclick="goUpdate()">Insert</button>
+    <!-- insert-inicio -->
+    <div class="insert-search-inicio">
+        <!-- Insert(0)shows insertdb-home and hides insert-search-inicio -->
+        <button id="" onclick="Insert(0)">Insert</button>
         <button id="" onclick="">Search</button>
-        <button onclick="goHome()">Home</button>
+    </div>
+
+    <!-- insertdb-home -->
+    <div class="insertdb-home">
+        <button id="" onclick="Insert(1)">Insert</button>
+        <button id="" onclick="Home()">Home</button>
+    </div>
+
+    <!-- update-home-button section -->
+    <div class="update-home-buttons">
+        <button id="" onclick="updateEntryDB()">Update</button>
+        <button id="" onclick="Home()">Home</button>
     </div>
 
     <!-- Insert - Search - Show All buttons -->
@@ -184,314 +172,273 @@
         //
         document.addEventListener("deviceready", onDeviceReady, false);
 
+        ///////////////////global variables/////////////////////
         var currentRow;
         var value = -1;
         var response = '';
         var ID = '';
+        // array for handling string to hide or show
+        var html_classes = [];
+        // gets textarea ids and values
+        var inputs = document.querySelector('.data-input').getElementsByTagName('textarea');
+        // string builder for db queries
+        var buildString = '';
+        var string_queries = [
+        //0 create table
+        'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,',
+        //1 search query to consult if data exists in db
+        "SELECT * FROM DEMO where date = ('",
+        ];
 
-        // Populate the phone_gap
-        //
+        ///////////////////populateDB/////////////////////////////
         function populateDB(tx) {
-           //var tempString = 'INSERT INTO DEMO ' + '(';
-           var tempString = 'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,';
-           var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
+            buildString = '';
+            // 0 CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            buildString = string_queries[0];
+            buildString += getAllIDFromInputs();
+            // execute query
+            tx.executeSql(buildString);
+        }
 
-           for (var i = 0; i < inputs.length; i++) {
+        ///////////////////errorCB/////////////////////////////
+        function errorCB(err) {
+           alert("Error processing SQL: " + err.code);
+        }
+
+        ///////////////////////////////hide group of classes from html/////////////////////////////
+        function hide(array) {
+            for(var i = 0; i < array.length; ++i) {
+                document.querySelector('.' + array[i]).style.display = 'none';
+            }
+        }
+
+        /////////////////////////////// show group of classes from html/////////////////////////////
+        function show(array) {
+            for(var i = 0; i < array.length; ++i) {
+                document.querySelector('.' + array[i]).style.display = 'block';
+            }
+        }
+
+        ///////////////////////////////insert buttons/////////////////////////////
+        function Insert(value) {
+            switch (value) {
+                //Insert(0)shows insertdb-home and hides insert-search-inicio
+                case 0:
+                    // hides insert-search-inicio
+                    html_classes = ["insert-search-inicio"];
+                    hide(html_classes)
+                    html_classes = [];
+                    // shows calendar, datainput, insertdb-home
+                    html_classes = ["form-center","data-input","insertdb-home"];
+                    show(html_classes);
+                    html_classes = [];
+                break;
+                // checks if date is empty
+                case 1:
+                    if(IsEmpty() !== true) {
+                       // check is date is already in db
+                       // if callback_execution replies back zero, there is no date in db
+                       // if callback_execution replies back one, date is already in db
+                        //searchQueryDB(string_queries[1], callback_execution,'getRowLength');
+                        searchQueryDB(string_queries[1], callback_execution,'getRowLength');
+                    }
+                break;
+        }
+    }
+
+        /////////////////////home buttons/////////////////////////////
+        function Home() {
+            // clean calendar
+            document.getElementById('date_from_calendar').value = "";
+            // clean textArea
+            cleanAllTextArea();
+
+            // hides all class except insert-search-inicio
+            //hides all (will grow as code grows)
+            html_classes = ["form-center","data-input","insertdb-home","update-home-buttons"];
+            hide(html_classes);
+            html_classes = [];
+
+            //shows insert-search-inicio
+            html_classes = ["insert-search-inicio"];
+            show(html_classes);
+            html_classes = [];
+        }
+
+        ///////////////////IsEmpty/////////////////////////////
+        function IsEmpty(){
+            //checks if calendar form is empty
+            if(document.forms["myForm"]["date"].value === "") {
+                alert("Empty dates are not valid, please pick another one");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        ///////////////////getallidsfromtextearea/////////////////////////////
+        function getAllIDFromInputs() {
+            var tempString = '';
+            for (var i = 0; i < inputs.length; i++) {
                 if (i === (inputs.length - 1) ) {
                     tempString += inputs[i].id + ',' + 'date' + ')';
                 } else {
                     tempString += inputs[i].id + ',';
                 }
             }
-            //tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT, name,number,number2,number3,number4,date)');
-            tx.executeSql(tempString);
+            return tempString
         }
 
-        // Query the phone_gap
-        //
-        function queryDB(tx) {
-           tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+        ///////////////////search query/////////////////////////////
+        //query means the sql query sintax
+        //callback is the callback function which depends on action parameter
+        //action is a string that uses the callback function in order to perform the action
+        function searchQueryDB(query, callback, action){
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            query += document.forms["myForm"]["date"].value + "'" + ")";
+            db.transaction(function (tx){
+
+                tx.executeSql(query,[],
+                function (tx, results) {
+                    switch(action) {
+                        // get row length (date validation)
+                        case 'getRowLength':
+                            callback(results.rows.length);
+                        break;
+                        case 'getRowID':
+                            //get id
+                            callback(results.rows.item(0).id)
+                        break;
+                        case 'getValuesInDB':
+                            //id, all values from textarea
+                            callback(results.rows.item(0));
+                        break;
+                    }
+                });
+
+            },errorCB);
         }
 
-        function searchQueryDB(tx) {
-
-           tx.executeSql("SELECT * FROM DEMO where date like ('%" + document.forms["myForm"]["date"].value + "%')", [], querySuccess, errorCB);
-           // cleans form data
-           document.forms["myForm"]["date"].value = ' ';
-        }
-        // Query the success callback
-        //
-        function querySuccess(tx, results) {
-          var tblText = '<table id="t01"><tr><th>ID</th> <th>Name</th> <th>Number</th> <th>Date</th></tr>';
-          var len = results.rows.length;
-
-           tblText += "</table>";
-           document.getElementById("tblDiv").innerHTML = tblText;
-        }
-
-        //Delete query
-        function deleteRow(tx) {
-           tx.executeSql('DELETE FROM DEMO WHERE id = ' + currentRow, [], queryDB, errorCB);
+    ///////////////////callback_execution/////////////////////////////
+    // takes actions based on what callback does (similar to a 'return')
+        function callback_execution(num) {
+            if(num){
+                alert('there are items');
+                // quita insert-db-home
+                html_classes = ["insertdb-home"];
+                hide(html_classes);
+                html_classes = [];
+                searchQueryDB(string_queries[1], update ,'getValuesInDB');
+            } else {
+                alert('no items');
+                newEntryDB();
+            }
         }
 
-        // Transaction error callback
-        //
-        function errorCB(err) {
-           alert("Error processing SQL: " + err.code);
-        }
+    //////////////////update/////////////////////////////
+        function update(data_from_db) {
+            //gets row ID
+            ID = '';
+            ID = data_from_db.id;
 
-        // Transaction success callback
-        //
-        function successCB() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(queryDB, errorCB);
+            // retrieve textarea with values from db on all of them
+            for(var i = 0; i < inputs.length; ++i) {
+                inputs[i].value = data_from_db[inputs[i].id];
+            }
+
+            //shows update-home-buttons
+            html_classes = ["update-home-buttons"];
+            show(html_classes);
+            html_classes = [];
         }
 
          // Cordova is ready
         //
         function onDeviceReady() {
-          // document.getElementById('data-input').style.display = 'none';
-          // document.getElementById('calendar').style.display = 'none';
-
           var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(populateDB, errorCB, successCB);
+          db.transaction(populateDB, errorCB);
         }
 
-        //Insert query
+    ///////////////////newEntryDB/////////////////////////////
+    // insert new entry on db
+    function newEntryDB() {
+        var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+        db.transaction(insertDB, errorCB);
         function insertDB(tx) {
-           // get any date from calendar
-           var date_from_calendar = document.getElementById('date_from_calendar').value;
-
-           switch (value) {
-            //saves in db from textareas
-            case 0:
-            var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
-
-            // checks empty date from calendar
-            if(date_from_calendar === "") {
-                alert("Date values can not be empty");
-            }
-            // saves data from textarea in db
-            else {
-                // build insert
-                var tempString = 'INSERT INTO DEMO ' + '(';
-                for (var i = 0; i < inputs.length; i++) {
-                    if (i === (inputs.length - 1) ) {
-                        tempString += inputs[i].id + ',' + 'date' + ')';
-                    } else {
-                            tempString += inputs[i].id + ',';
-                        }
-                    }
-
-                    //build values
-                    tempString += ' VALUES ("';
-                    for (var i = 0; i < inputs.length; i++) {
-                        if(i === (inputs.length - 1) ) {
-                            tempString += inputs[i].value + '","' + date_from_calendar + '")';
-                            //clean values
-                            inputs[i].value = "";
-                        } else {
-                            tempString += inputs[i].value + '","';
-                            //clean values
-                            inputs[i].value = "";
-                        }
-                    }
-
-                    tx.executeSql(tempString);
-                    //cleans date from calendar
-                    document.getElementById('date_from_calendar').value = "";
-                    alert("Data saved successfully");
-                }
-
-            value = -1;
-            break;
-            case 1:
-                response = fetchData();
-                //string on response should be like this
-                //#test-12345?
-                //get test
-                var name = response.substring( (response.indexOf('#') + 1), (response.indexOf('-')) );
-                document.getElementById("txtName").value = name;
-                //get 12345
-                var number = response.substring( (response.indexOf('-') + 1), (response.indexOf('?')) );
-                document.getElementById("txtNumber").value = number;
-
-                //inserts name and number in local db
-                tx.executeSql('INSERT INTO DEMO (name,number,date) VALUES ("' + document.getElementById("txtName").value + '","' + document.getElementById("txtNumber").value + '","' + today + '")');
-                // clean text data entry fields
-                document.getElementById("txtName").value = '';
-                document.getElementById("txtNumber").value = '';
-                value = -1;
-            break;
-           }
-        }
-
-        function goInsert(task) {
-          switch (task) {
-            // saves data in db from textarea
-            case 0:
-                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-                value = task;
-                db.transaction(insertDB, errorCB, successCB);
-                break;
-            // gets data from internet
-            case 1:
-                console.log("Value of 1");
-                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-                value = task;
-                db.transaction(insertDB, errorCB, successCB);
-                break;
-            // shows textarea and calendar
-            case 2:
-                // hides insert button
-                document.getElementById('insert-search-buttons').style.display = 'none';
-                // shows textarea elements
-                document.getElementById('data-input').style.display = 'block';
-                // shows calendar
-                // document.getElementById('calendar').style.display = 'block';
-                document.querySelector('.form-center').style.display = 'block';
-                break;
-          }
-        }
-
-        function goSearch(task) {
-          switch (task) {
-            // shows calendar
-            case 0:                
-                document.querySelector('.form-center').style.display = 'block';
-                document.getElementById('goSearchButton1').style.display = 'block';
-
-                document.getElementById('goInsertButton2').style.display = 'none';
-                document.getElementById('goSearchButton0').style.display = 'none';
-                break;
-                // checks data existence in db
-            case 1:
-                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-                db.transaction(searchQueryDB, errorCB);
-                break;
-          }
-        }
-
-        function goDelete() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(deleteRow, errorCB);
-          document.getElementById('qrpopup').style.display='none';
-        }
-
-        //Show the popup after tapping a row in table
-        //
-        function goPopup(row,rowname,rownum) {
-          currentRow=row;
-          document.getElementById("qrpopup").style.display="block";
-          document.getElementById("editNameBox").value = rowname;
-          document.getElementById("editNumberBox").value = rownum;
-        }
-
-        function editRow(tx) {
-          tx.executeSql('UPDATE DEMO SET name ="'+document.getElementById("editNameBox").value+
-          '", number= "'+document.getElementById("editNumberBox").value+ '" WHERE id = '
-          + currentRow, [], queryDB, errorCB);
-        }
-        function goEdit() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(editRow, errorCB);
-          document.getElementById('qrpopup').style.display='none';
-        }
-
-        ///////////////////////update///////////////////////
-        function goUpdate() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-            db.transaction(update, errorCB);
-        }
-
-        function update(tx) {
-            var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
-
-            var tempString = 'UPDATE DEMO SET ';
-
+            buildString = '';
+            buildString += 'INSERT INTO DEMO ' + '(';
+            buildString += getAllIDFromInputs();        
+            buildString += ' VALUES ("';
             for (var i = 0; i < inputs.length; i++) {
-                if (i === (inputs.length - 1) ) {
-                    tempString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
+                if(i === (inputs.length - 1) ) {
+                    buildString += inputs[i].value + '","' + document.forms["myForm"]["date"].value + '")';
+                    //clean values
+                    inputs[i].value = "";
                 } else {
-                    tempString += inputs[i].id + '=' + '"' + inputs[i].value + '"' +  ',' + ' ';
+                    buildString += inputs[i].value + '","';
+                    //clean values
+                    inputs[i].value = "";
                 }
             }
-            tempString += 'WHERE ID=' + ID;
-            tx.executeSql(tempString);
-
+            tx.executeSql(buildString);
             //cleans date from calendar
             document.getElementById('date_from_calendar').value = "";
-            //clean values from all textareas
+            alert("Data saved successfully");
+            }
+        }
+
+        ///////////////////getRowID/////////////////////////////
+        //get ID of data already saved on db
+        function getRowID(num) {
+            alert(num);
+        }
+
+        ///////////////////updateEntryDB/////////////////////////////
+        //update values from id
+        function updateEntryDB() {
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            db.transaction(updateDB, errorCB);
+        }
+
+        ///////////////////updateEntryDB/////////////////////////////
+        //update query
+        function updateDB(tx) {
+            buildString = '';
+            buildString = 'UPDATE DEMO SET ';
+            for (var i = 0; i < inputs.length; i++) {
+                if (i === (inputs.length - 1) ) {
+                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
+                } else {
+                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' +  ',' + ' ';
+                }
+            }
+            buildString += 'WHERE ID=' + ID;
+            tx.executeSql(buildString);
+            alert("Updated successfully");
+
+            ////////// clean all fields
+            // clean calendar
+            document.getElementById('date_from_calendar').value = "";
+            // clean textArea
+            cleanAllTextArea();
+
+            //hide update-home-buttons
+            html_classes = ["update-home-buttons"];
+            hide(html_classes);
+            html_classes = [];
+
+            //shows insertdb-home buttons
+            html_classes = ["insertdb-home"];
+            show(html_classes);
+            html_classes = [];
+        }
+
+        ///////////////////clean all textarea/////////////////////////////
+        function cleanAllTextArea () {
             for(var i=0; i < inputs.length; i++) {
                 //clean values
                 inputs[i].value = "";
             }
-            alert("Data successfully updated");
-
-            document.querySelector('.update_insert-search-buttons-textarea').style.display = 'none';
-            document.querySelector('.insert-search-buttons-textarea').style.display = 'block';
-        }
-
-        ///////////////////Fetch data from server///////////////////
-
-        function fetchData() {
-            var url = "http://phpcourse-2.000webhostapp.com/test.php"
-            var request = new XMLHttpRequest();
-            request.open("GET",url,false);
-            request.send();
-            if ((request.readyState === 4) && (request.status === 200)) {
-              alert("Connected to Internet");
-              return request.response;
-            }
-       }
-
-        /////////////////////////validate if date has been preveiously saved in db//////////////////////////
-        function checkDB() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-            db.transaction(processQuery, errorCB);
-        }
-
-        function processQuery(tx) {
-            tx.executeSql("SELECT * FROM DEMO where date = ('" + document.forms["myForm"]["date"].value + "')", [], isAlreadyInDB, errorCB);
-        }
-
-        function isAlreadyInDB(tx, results) {
-            var len = results.rows.length;
-
-            //gets ID only when updating (len === 1)
-            if(len === 1) {
-                ID = '';
-                ID = results.rows.item(0).id;
-            }
-            var inputs = document.getElementById('data-input').getElementsByTagName('textarea');
-            switch(len) {
-                // 0 no in db, proceed to save
-                case 0:
-                    // go insert zero
-                    goInsert(len);
-                    break;
-                case 1:
-                    ////document.getElementById('IsEmpty').style.display = 'none';
-                    document.querySelector('.insert-search-buttons-textarea').style.display = 'none';
-                    document.querySelector('.update_insert-search-buttons-textarea').style.display = 'block';
-                    alert("Date already saved");
-                    // retrieve textarea with values from db on all of them
-                    for(var i = 0; i < inputs.length; ++i) {
-                        inputs[i].value = results.rows.item(0)[inputs[i].id];
-                    }
-            }
-        }
-
-        ///////////////////IsEmpty/////////////////////////////
-        function IsEmpty(){
-            if(document.forms["myForm"]["date"].value === "") {
-                alert("empty");
-                // do nothing
-              }
-            else {
-                //goInsert(0);
-                checkDB();
-            }  
         }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
