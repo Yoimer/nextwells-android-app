@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <h1>NextWells App Version 1.7</h1>
+    <h1>NextWells App Version 1.8</h1>
     <p>New Daily Operational Report</p>
 
     <!-- Calendar form section -->
@@ -139,12 +139,18 @@
     <div class="insert-search-inicio">
         <!-- Insert(0)shows insertdb-home and hides insert-search-inicio -->
         <button id="" onclick="Insert(0)">Insert</button>
-        <button id="" onclick="">Search</button>
+        <button id="" onclick="Search(0)">Search</button>
     </div>
 
     <!-- insertdb-home -->
     <div class="insertdb-home">
         <button id="" onclick="Insert(1)">Insert</button>
+        <button id="" onclick="Home()">Home</button>
+    </div>
+
+    <!-- searchdb-home -->
+    <div class="searchdb-home">
+        <button id="" onclick="Search(1)">Search</button>
         <button id="" onclick="Home()">Home</button>
     </div>
 
@@ -154,41 +160,25 @@
         <button id="" onclick="Home()">Home</button>
     </div>
 
-    <!-- Insert - Search - Show All buttons -->
-    <div id="tblDiv"></div>
-    <div style="text-align: left">
-        <!-- goInsert(0) means insert value from insert button-->
-        <!-- <button onclick="goInsert(0)">Insert</button> -->
-        <!-- <button onclick="goSearch()">Search</button> -->
-        <!-- <button onclick="successCB()">Show All</button> -->
-        <!-- goInsert(1) means insert value from internet-->
-        <!-- <button onclick="goInsert(1)">Fetch Data</button> -->
+    <!-- panel-modify-delete-update-home section -->
+    <div class="panel-modify-delete-update-home">
+        <button id="" onclick="modify()">Modify</button>
+        <button id="" onclick="Delete()">Delete</button>
+        <button id="" onclick="Search(2)">Update</button>
+        <button id="" onclick="Home()">Home</button>
     </div>
-
     <!-- JavaScript section-->
     <script type="text/javascript" charset="utf-8">
 
         // Wait for Cordova to load
-        //
         document.addEventListener("deviceready", onDeviceReady, false);
 
-        ///////////////////global variables/////////////////////
-        var currentRow;
-        var value = -1;
-        var response = '';
-        var ID = '';
-        // array for handling string to hide or show
-        var html_classes = [];
-        // gets textarea ids and values
-        var inputs = document.querySelector('.data-input').getElementsByTagName('textarea');
-        // string builder for db queries
-        var buildString = '';
-        var string_queries = [
-        //0 create table
-        'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,',
-        //1 search query to consult if data exists in db
-        "SELECT * FROM DEMO where date = ('",
-        ];
+        // Cordova is ready
+        function onDeviceReady() {
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(populateDB, errorCB);
+        }
+
 
         ///////////////////populateDB/////////////////////////////
         function populateDB(tx) {
@@ -243,8 +233,40 @@
                         searchQueryDB(string_queries[1], callback_execution,'getRowLength');
                     }
                 break;
+            }
         }
-    }
+
+        ///////////////////////////////search buttons/////////////////////////////
+        function Search(value) {
+            switch (value) {
+                //Search(0)shows serachdb-home and hides insert-search-inicio
+                case 0:
+                    // hides insert-search-inicio
+                    html_classes = ["insert-search-inicio"];
+                    hide(html_classes)
+                    html_classes = [];
+                    // shows calendar, searchdb-home
+                    html_classes = ["form-center","searchdb-home"];
+                    show(html_classes);
+                    html_classes = [];
+                break;
+                // checks if date is empty
+                case 1:
+                    if(IsEmpty() !== true) {
+                       // check is date is already in db
+                       // if callback_execution replies back zero, there is no date in db
+                       // if callback_execution replies back one, date is already in db
+                        //searchQueryDB(string_queries[1], callback_execution,'getRowLength');
+                        searchQueryDB(string_queries[1], callback_execution_search,'getRowLength');
+                    }
+                break;
+                case 2:
+                    if(IsEmpty() !== true) {
+                        searchQueryDB(string_queries[1], callback_execution_search_update,'getRowLength')
+                    }
+                break;
+            }
+        }
 
         /////////////////////home buttons/////////////////////////////
         function Home() {
@@ -252,10 +274,12 @@
             document.getElementById('date_from_calendar').value = "";
             // clean textArea
             cleanAllTextArea();
+            // makeTextAreaWriteable
+            makeTextAreaWriteable();
 
             // hides all class except insert-search-inicio
             //hides all (will grow as code grows)
-            html_classes = ["form-center","data-input","insertdb-home","update-home-buttons"];
+            html_classes = ["form-center","data-input","insertdb-home","update-home-buttons","searchdb-home","panel-modify-delete-update-home"];
             hide(html_classes);
             html_classes = [];
 
@@ -315,7 +339,6 @@
                         break;
                     }
                 });
-
             },errorCB);
         }
 
@@ -324,7 +347,7 @@
         function callback_execution(num) {
             if(num){
                 alert('there are items');
-                // quita insert-db-home
+                // quita insert-db-home //will grow as code grows??
                 html_classes = ["insertdb-home"];
                 hide(html_classes);
                 html_classes = [];
@@ -332,6 +355,30 @@
             } else {
                 alert('no items');
                 newEntryDB();
+            }
+        }
+
+    ///////////////////callback_execution_search/////////////////////////////
+    // takes actions based on what callback does (similar to a 'return')
+        function callback_execution_search(num) {
+            if(num){
+                alert('there are items');
+
+                // hides searchdb-home //will grow as code grows??
+                html_classes = ["searchdb-home"];
+                hide(html_classes);
+                html_classes = [];
+
+                // show textarea will grow as code grows??
+                html_classes = ["data-input", "panel-modify-delete-update-home"];
+                show(html_classes);
+                html_classes = [];
+
+                ////searchQueryDB(string_queries[1], update ,'getValuesInDB');
+                searchQueryDB(string_queries[1], showDataAsReadOnly,'getValuesInDB');
+            } else {
+                alert('The Date selected is not saved on db. Please pick another');
+                //newEntryDB();
             }
         }
 
@@ -346,24 +393,19 @@
                 inputs[i].value = data_from_db[inputs[i].id];
             }
 
-            //shows update-home-buttons
+            //shows update-home-buttons //will grow as code grows??
             html_classes = ["update-home-buttons"];
             show(html_classes);
             html_classes = [];
         }
 
-         // Cordova is ready
-        //
-        function onDeviceReady() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(populateDB, errorCB);
+        ///////////////////newEntryDB/////////////////////////////
+        // insert new entry on db
+        function newEntryDB() {
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            db.transaction(insertDB, errorCB);
         }
 
-    ///////////////////newEntryDB/////////////////////////////
-    // insert new entry on db
-    function newEntryDB() {
-        var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-        db.transaction(insertDB, errorCB);
         function insertDB(tx) {
             buildString = '';
             buildString += 'INSERT INTO DEMO ' + '(';
@@ -384,7 +426,6 @@
             //cleans date from calendar
             document.getElementById('date_from_calendar').value = "";
             alert("Data saved successfully");
-            }
         }
 
         ///////////////////getRowID/////////////////////////////
@@ -404,15 +445,7 @@
         //update query
         function updateDB(tx) {
             buildString = '';
-            buildString = 'UPDATE DEMO SET ';
-            for (var i = 0; i < inputs.length; i++) {
-                if (i === (inputs.length - 1) ) {
-                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
-                } else {
-                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' +  ',' + ' ';
-                }
-            }
-            buildString += 'WHERE ID=' + ID;
+            updateQuery();
             tx.executeSql(buildString);
             alert("Updated successfully");
 
@@ -422,7 +455,7 @@
             // clean textArea
             cleanAllTextArea();
 
-            //hide update-home-buttons
+            //hide update-home-buttons // will grow ??
             html_classes = ["update-home-buttons"];
             hide(html_classes);
             html_classes = [];
@@ -433,12 +466,131 @@
             html_classes = [];
         }
 
-        ///////////////////clean all textarea/////////////////////////////
+        //////////////////////////////updateQuery////////////////////////////////
+        function updateQuery() {
+            buildString = 'UPDATE DEMO SET ';
+            for (var i = 0; i < inputs.length; i++) {
+                if (i === (inputs.length - 1) ) {
+                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
+                } else {
+                    buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' +  ',' + ' ';
+                }
+            }
+            buildString += 'WHERE ID=' + ID;
+        }
+
+        /////////////////clean all textarea/////////////////////////////
         function cleanAllTextArea () {
             for(var i=0; i < inputs.length; i++) {
                 //clean values
                 inputs[i].value = "";
             }
+        }
+
+        ///////////////////shows all data in textarea as readonly/////////////////////////////
+        function showDataAsReadOnly (textarea) {
+            for(var i=0; i < inputs.length; i++) {
+                inputs[i].value = textarea[inputs[i].id];
+                inputs[i].setAttribute("readonly", true);
+            }
+        }
+
+        ///////////////////shows all data in textarea/////////////////////////////
+        function showDataAsRead (textarea) {
+            for(var i=0; i < inputs.length; i++) {
+                inputs[i].value = textarea[inputs[i].id];
+            }
+        }
+
+        ///////////////////modify/////////////////////////////
+        function modify() {
+            if(IsEmpty() !== true) {
+                searchQueryDB(string_queries[1], callback_execution_modify ,'getRowLength');
+            }
+        }
+
+        ///////////////////callback_execution_modify/////////////////////////////
+        function callback_execution_modify(num) {
+            if(num){
+                //alert('there are items');
+                makeTextAreaWriteable()
+                alert("Text fields are now ready to be written");
+            } else {
+                alert('no items');
+            }
+        }
+
+        ///////////////////showDataAsReadOnlyFalseonDelete/////////////////////////////
+        function makeTextAreaWriteable() {
+            for(var i=0; i < inputs.length; i++) {
+                inputs[i].removeAttribute("readonly");
+            }
+        }
+
+        ///////////////////delete/////////////////////////////
+        function Delete() {
+            if(IsEmpty() !== true) {
+                searchQueryDB(string_queries[1], callback_execution_delete ,'getRowLength');
+            }
+        }
+
+    ///////////////////callback_execution_delete/////////////////////////////
+    // takes actions based on what callback does (similar to a 'return')
+        function callback_execution_delete(num) {
+            if(num){
+                alert('there are items');
+                // get id
+                searchQueryDB(string_queries[1], deleteQuery ,'getRowID');
+            } else {
+                alert('no items');
+            }
+        }
+
+        ///////////////////deleteQuery/////////////////////////////
+        function deleteQuery(id) {
+            ID = '';
+            ID = id;
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            db.transaction(deleterow, errorCB);
+        }
+
+        ///////////////////deleterow/////////////////////////////
+        function deleterow(tx) {
+            tx.executeSql('DELETE FROM DEMO WHERE id = ' + ID);
+
+            // cleans calendar
+            document.forms["myForm"]["date"].value = "";
+            // clean all text area
+            cleanAllTextArea();
+            // make all textareas writeable
+            makeTextAreaWriteable();
+            alert("Item deleted successfully");
+            Home();
+        }
+
+        ///////////////////callback_from_search/////////////////////////////
+        function callback_execution_search_update(num) {
+            if(num){
+                alert('there are items');
+                searchQueryDB(string_queries[1], update_from_search ,'getValuesInDB');
+            } else {
+                alert('no items');
+            }
+        }
+
+        /////////////////update_from_search/////////////////////
+        function update_from_search(data_from_db) {
+            //get id
+            ID = '';
+            ID = data_from_db.id;
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            db.transaction(function (tx){
+                buildString = '';
+                updateQuery();
+                tx.executeSql(buildString)
+                alert("Updated successfully");
+                Home();
+            });
         }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
