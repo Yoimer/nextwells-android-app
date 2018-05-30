@@ -158,3 +158,11 @@ dd {
 .update-home-buttons {
     display: none;
 }
+
+.searchdb-home {
+    display: none;
+}
+
+.panel-modify-delete-update-home {
+    display: none;
+}
