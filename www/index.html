@@ -167,18 +167,32 @@
         <button id="" onclick="Search(2)">Update</button>
         <button id="" onclick="Home()">Home</button>
     </div>
+
+
     <!-- JavaScript section-->
     <script type="text/javascript" charset="utf-8">
 
         // Wait for Cordova to load
+        //
         document.addEventListener("deviceready", onDeviceReady, false);
 
-        // Cordova is ready
-        function onDeviceReady() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
-          db.transaction(populateDB, errorCB);
-        }
-
+        ///////////////////global variables/////////////////////
+        var currentRow;
+        var value = -1;
+        var response = '';
+        var ID = '';
+        // array for handling string to hide or show
+        var html_classes = [];
+        // gets textarea ids and values
+        var inputs = document.querySelector('.data-input').getElementsByTagName('textarea');
+        // string builder for db queries
+        var buildString = '';
+        var string_queries = [
+        //0 create table
+        'CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY AUTOINCREMENT,',
+        //1 search query to consult if data exists in db
+        "SELECT * FROM DEMO where date = ('",
+        ];
 
         ///////////////////populateDB/////////////////////////////
         function populateDB(tx) {
@@ -233,8 +247,8 @@
                         searchQueryDB(string_queries[1], callback_execution,'getRowLength');
                     }
                 break;
-            }
         }
+    }
 
         ///////////////////////////////search buttons/////////////////////////////
         function Search(value) {
@@ -312,6 +326,7 @@
             }
             return tempString
         }
+
 
         ///////////////////search query/////////////////////////////
         //query means the sql query sintax
@@ -397,6 +412,13 @@
             html_classes = ["update-home-buttons"];
             show(html_classes);
             html_classes = [];
+        }
+
+         // Cordova is ready
+        //
+        function onDeviceReady() {
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+          db.transaction(populateDB, errorCB);
         }
 
         ///////////////////newEntryDB/////////////////////////////
