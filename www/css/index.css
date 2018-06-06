@@ -4,6 +4,16 @@ input[type='text'] {
     /* margin-left: 10px; */
 }
 
+/*center everything*/
+body{
+    text-align: center;
+    /*background-image: url("https://www.longviewplus.com/assets/img/minilogo.png");*/
+    background-image: url("img/minilogo.png");
+    background-repeat: no-repeat;
+    background-color: lightblue;
+    /*background-position: center; */
+}
+
 table#t01 {
     width:100%;
 }
@@ -166,3 +176,4 @@ dd {
 .panel-modify-delete-update-home {
     display: none;
 }
+
