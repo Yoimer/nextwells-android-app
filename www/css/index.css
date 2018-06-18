@@ -10,7 +10,8 @@ body{
     background-image: url("img/minilogo.png");
     background-repeat: no-repeat;
     background-color: lightblue;
-    background-position: 850px 125px;
+    background-position: 85px 115px;
+/*    background-position: 60%;*/
     /*background-position:center;*/
 }
 
@@ -176,7 +177,3 @@ dd {
 .panel-modify-delete-update-home {
     display: none;
 }
-
-/*.logo{
-    background-image: url("img/minilogo.png");
-}*/
