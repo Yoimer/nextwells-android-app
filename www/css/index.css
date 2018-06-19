@@ -7,12 +7,13 @@ input[type='text'] {
 /*center everything*/
 body{
     text-align: center;
-    background-image: url("img/minilogo.png");
+    /*background-image: url("img/minilogo.png");*/
     background-repeat: no-repeat;
     background-color: lightblue;
-    background-position: 85px 115px;
-/*    background-position: 60%;*/
-    /*background-position:center;*/
+    /*background-position: 85px 115px;*/
+    max-height:100%;
+    max-width: :100%;
+    object-fit: contain;
 }
 
 table#t01 {
