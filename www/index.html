@@ -28,14 +28,14 @@
 </head>
 
 <body>
-<!--     <h1>NextWells App Version 1.9   (prueba from Android 5.0 to Android 7.0) prueba db name </h1>
+<!--     <h1>NextWells App Version 1.9   (longview from Android 5.0 to Android 7.0) longview db name </h1>
     <p>New Daily Operational Report</p>
  -->
     <h1>
         DOR Daily Operational Report
         <br>
         <p><img src="css/img/minilogo.png" alt="Smiley face" width="100" height="100"></p>
-        Version 1.11
+        Version 1.12
     </h1>
 
     <!-- Calendar form section -->
@@ -195,15 +195,15 @@
         var buildString = '';
         var string_queries = [
         //0 create table
-        'CREATE TABLE IF NOT EXISTS prueba (id INTEGER PRIMARY KEY AUTOINCREMENT,',
+        'CREATE TABLE IF NOT EXISTS longview (id INTEGER PRIMARY KEY AUTOINCREMENT,',
         //1 search query to consult if data exists in db
-        "SELECT * FROM prueba where date = ('",
+        "SELECT * FROM longview where date = ('",
         ];
 
         ///////////////////populateDB/////////////////////////////
         function populateDB(tx) {
             buildString = '';
-            // 0 CREATE TABLE IF NOT EXISTS prueba (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            // 0 CREATE TABLE IF NOT EXISTS longview (id INTEGER PRIMARY KEY AUTOINCREMENT,
             buildString = string_queries[0];
             buildString += getAllIDFromInputs();
             // execute query
@@ -339,7 +339,7 @@
         //callback is the callback function which depends on action parameter
         //action is a string that uses the callback function in order to perform the action
         function searchQueryDB(query, callback, action){
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
             query += document.forms["myForm"]["date"].value + "'" + ")";
             db.transaction(function (tx){
 
@@ -423,20 +423,20 @@
          // Cordova is ready
         //
         function onDeviceReady() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
           db.transaction(populateDB, errorCB);
         }
 
         ///////////////////newEntryDB/////////////////////////////
         // insert new entry on db
         function newEntryDB() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
             db.transaction(insertDB, errorCB);
         }
 
         function insertDB(tx) {
             buildString = '';
-            buildString += 'INSERT INTO prueba ' + '(';
+            buildString += 'INSERT INTO longview ' + '(';
             buildString += getAllIDFromInputs();        
             buildString += ' VALUES ("';
             for (var i = 0; i < inputs.length; i++) {
@@ -465,7 +465,7 @@
         ///////////////////updateEntryDB/////////////////////////////
         //update values from id
         function updateEntryDB() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
             db.transaction(updateDB, errorCB);
         }
 
@@ -496,7 +496,7 @@
 
         //////////////////////////////updateQuery////////////////////////////////
         function updateQuery() {
-            buildString = 'UPDATE prueba SET ';
+            buildString = 'UPDATE longview SET ';
             for (var i = 0; i < inputs.length; i++) {
                 if (i === (inputs.length - 1) ) {
                     buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
@@ -578,13 +578,13 @@
         function deleteQuery(id) {
             ID = '';
             ID = id;
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
             db.transaction(deleterow, errorCB);
         }
 
         ///////////////////deleterow/////////////////////////////
         function deleterow(tx) {
-            tx.executeSql('DELETE FROM prueba WHERE id = ' + ID);
+            tx.executeSql('DELETE FROM longview WHERE id = ' + ID);
 
             // cleans calendar
             document.forms["myForm"]["date"].value = "";
@@ -611,7 +611,7 @@
             //get id
             ID = '';
             ID = data_from_db.id;
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova prueba", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova longview", 200000);
             db.transaction(function (tx){
                 buildString = '';
                 updateQuery();
