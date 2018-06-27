@@ -631,14 +631,17 @@
             }
             var url = "https://api.thingspeak.com/update?api_key=2SWY1G9MF2PCFIE9&field1=" + temp;
             var request = new XMLHttpRequest();
-            request.open("GET",url,false);
-            request.send();
-            if ((request.readyState === 4) && (request.status === 200)) {
+            // connected
+            request.onload = function() { 
                 alert("Data saved on remote server successfully")
-            }else {
-                alert("There is a connection problem, please try later");
             }
-        }
+            // no internet
+            request.onerror = function() { 
+                alert("There is a network issue, please try later"); 
+            }
+            request.open("GET",url,true);
+            request.send();
+       }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
 
