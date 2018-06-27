@@ -635,6 +635,8 @@
             request.send();
             if ((request.readyState === 4) && (request.status === 200)) {
                 alert("Data saved on remote server successfully")
+            }else {
+                alert("There is a connection problem, please try later");
             }
         }
 
