@@ -146,6 +146,7 @@
         <!-- Insert(0)shows insertdb-home and hides insert-search-inicio -->
         <button id="" onclick="Insert(0)">Insert</button>
         <button id="" onclick="Search(0)">Search</button>
+        <button id="" onclick="uploadAll()">UploadAll</button>
     </div>
 
     <!-- insertdb-home -->
@@ -642,6 +643,55 @@
             request.open("GET",url,true);
             request.send();
        }
+
+        ///////////////////uploadAll/////////////////////////////
+
+        function uploadAll() {
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+            // db.transaction(updateDB, errorCB);
+            db.transaction(queryDB, errorCB);
+        }
+
+        // Query the database
+        //
+        function queryDB(tx) {
+            tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+        }
+
+        function querySuccess(tx, results) {
+            var len = results.rows.length;
+            var temp = '$';
+            // checking empty db
+            // len > 0 means there is data saved already
+            if(len > 0) {
+                //
+                for (var i = 0; i < len; i++) {
+                    //makes results.rows.item(i) a string (it is an object object data type)
+                    temp += JSON.stringify(results.rows.item(i));
+                    temp += '$';
+                }
+                // publish to internet
+                var url = "https://api.thingspeak.com/update?api_key=2SWY1G9MF2PCFIE9&field1=" + temp;
+                var request = new XMLHttpRequest();
+
+                // connected
+                request.onload = function() { 
+                    alert("Data saved on remote server successfully")
+                }
+
+                // no internet
+                request.onerror = function() { 
+                    alert("There is a network issue, please try later"); 
+                }
+
+                request.open("GET",url,true);
+                request.send();
+
+            // data base is empty, there is nothing to publish to internet
+            } else {
+                alert("There is no saved data in db");
+            }
+        }
 
         /////////////////Calendar//////////////////////////////////////////////////////////
 
