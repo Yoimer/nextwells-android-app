@@ -35,7 +35,7 @@
         DOR Daily Operational Report
         <br>
         <p><img src="css/img/minilogo.png" alt="Smiley face" width="100" height="100"></p>
-        Version 1.14.1
+        Version 1.15
     </h1>
 
     <!-- Calendar form section -->
@@ -147,6 +147,7 @@
         <button id="" onclick="Insert(0)">Insert</button>
         <button id="" onclick="Search(0)">Search</button>
         <button id="" onclick="uploadAll()">UploadAll</button>
+        <button id="" onclick="deleteAll()">DeleteAll</button>
     </div>
 
     <!-- insertdb-home -->
@@ -170,7 +171,7 @@
     <!-- panel-modify-delete-update-home section -->
     <div class="panel-modify-delete-update-home">
         <button id="" onclick="modify()">Modify</button>
-        <button id="" onclick="Delete()">Delete</button>
+<!--         <button id="" onclick="Delete()">Delete</button> -->
         <button id="" onclick="Search(2)">Update</button>
 <!--         <button id="" onclick="upload()">Upload</button> -->
         <button id="" onclick="Home()">Home</button>
@@ -623,27 +624,6 @@
             });
         }
 
-        /////////////////upload/////////////////////
-        function upload() {
-            var temp = ',';
-            temp += document.forms["myForm"]["date"].value + ',';
-            for(var i=0; i < inputs.length; i++) {
-                temp += inputs[i].value + ',' ;
-            }
-            var url = "https://api.thingspeak.com/update?api_key=2SWY1G9MF2PCFIE9&field1=" + temp;
-            var request = new XMLHttpRequest();
-            // connected
-            request.onload = function() { 
-                alert("Data saved on remote server successfully")
-            }
-            // no internet
-            request.onerror = function() { 
-                alert("There is a network issue, please try later"); 
-            }
-            request.open("GET",url,true);
-            request.send();
-       }
-
         ///////////////////uploadAll/////////////////////////////
 
         function uploadAll() {
@@ -691,6 +671,27 @@
             // data base is empty, there is nothing to publish to internet
             } else {
                 alert("There is no saved data in db");
+            }
+        }
+
+        ///////////////////deletedAll/////////////////////////////
+        function deleteAll() {
+            var answer = confirm("Data will be deleted!\nPress OK to proceed or\nCancel to leave.")
+
+            if (answer) {
+                var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
+                db.transaction(function (tx) {
+                     tx.executeSql('DELETE FROM iphone',[],
+                        function(tx,results){
+                            //console.error("Table Dropped")
+                            alert("Data has been wiped out");
+                        },
+                        function(tx,error){
+                            //console.error("Error: " + error.message)
+                            alert("Error: " + error.message);
+                        }
+                    )
+                })
             }
         }
 
