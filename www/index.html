@@ -11,7 +11,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" />
     <!-- Good default declaration:
     * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-    * https://ssl.gstatic.com is required only on server and is needed for TalkBack to function properly
+    * https://ssl.gstatic.com is required only on servidor and is needed for TalkBack to function properly
     * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
         * Enable inline JS: add 'unsafe-inline' to default-src
         * Enable eval(): add 'unsafe-eval' to default-src
@@ -28,14 +28,14 @@
 </head>
 
 <body>
-<!--     <h1>NextWells App Version 1.9   (server from server 5.0 to server 7.0) server db name </h1>
+<!--     <h1>NextWells App Version 1.9   (servidor from servidor 5.0 to servidor 7.0) servidor db name </h1>
     <p>New Daily Operational Report</p>
  -->
     <h1>
         DOR Daily Operational Report
         <br>
         <p><img src="css/img/minilogo.png" alt="Smiley face" width="100" height="100"></p>
-        Version 1.15.1 http://192.168.1.102:8000/api
+        Version 1.15.2 https://192.168.1.102:8000/api
     </h1>
 
     <!-- Calendar form section -->
@@ -198,15 +198,15 @@
         var buildString = '';
         var string_queries = [
         //0 create table
-        'CREATE TABLE IF NOT EXISTS server (id INTEGER PRIMARY KEY AUTOINCREMENT,',
+        'CREATE TABLE IF NOT EXISTS servidor (id INTEGER PRIMARY KEY AUTOINCREMENT,',
         //1 search query to consult if data exists in db
-        "SELECT * FROM server where date = ('",
+        "SELECT * FROM servidor where date = ('",
         ];
 
         ///////////////////populateDB/////////////////////////////
         function populateDB(tx) {
             buildString = '';
-            // 0 CREATE TABLE IF NOT EXISTS server (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            // 0 CREATE TABLE IF NOT EXISTS servidor (id INTEGER PRIMARY KEY AUTOINCREMENT,
             buildString = string_queries[0];
             buildString += getAllIDFromInputs();
             // execute query
@@ -342,7 +342,7 @@
         //callback is the callback function which depends on action parameter
         //action is a string that uses the callback function in order to perform the action
         function searchQueryDB(query, callback, action){
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             query += document.forms["myForm"]["date"].value + "'" + ")";
             db.transaction(function (tx){
 
@@ -426,20 +426,20 @@
          // Cordova is ready
         //
         function onDeviceReady() {
-          var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+          var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
           db.transaction(populateDB, errorCB);
         }
 
         ///////////////////newEntryDB/////////////////////////////
         // insert new entry on db
         function newEntryDB() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             db.transaction(insertDB, errorCB);
         }
 
         function insertDB(tx) {
             buildString = '';
-            buildString += 'INSERT INTO server ' + '(';
+            buildString += 'INSERT INTO servidor ' + '(';
             buildString += getAllIDFromInputs();        
             buildString += ' VALUES ("';
             for (var i = 0; i < inputs.length; i++) {
@@ -468,7 +468,7 @@
         ///////////////////updateEntryDB/////////////////////////////
         //update values from id
         function updateEntryDB() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             db.transaction(updateDB, errorCB);
         }
 
@@ -499,7 +499,7 @@
 
         //////////////////////////////updateQuery////////////////////////////////
         function updateQuery() {
-            buildString = 'UPDATE server SET ';
+            buildString = 'UPDATE servidor SET ';
             for (var i = 0; i < inputs.length; i++) {
                 if (i === (inputs.length - 1) ) {
                     buildString += inputs[i].id + '=' + '"' + inputs[i].value + '"' + ' ';
@@ -581,13 +581,13 @@
         function deleteQuery(id) {
             ID = '';
             ID = id;
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             db.transaction(deleterow, errorCB);
         }
 
         ///////////////////deleterow/////////////////////////////
         function deleterow(tx) {
-            tx.executeSql('DELETE FROM server WHERE id = ' + ID);
+            tx.executeSql('DELETE FROM servidor WHERE id = ' + ID);
 
             // cleans calendar
             document.forms["myForm"]["date"].value = "";
@@ -614,7 +614,7 @@
             //get id
             ID = '';
             ID = data_from_db.id;
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             db.transaction(function (tx){
                 buildString = '';
                 updateQuery();
@@ -627,7 +627,7 @@
         ///////////////////uploadAll/////////////////////////////
 
         function uploadAll() {
-            var db = window.openDatabase("phone_gap", "0.10", "Cordova server", 200000);
+            var db = window.openDatabase("phone_gap", "0.10", "Cordova servidor", 200000);
             // db.transaction(updateDB, errorCB);
             db.transaction(queryDB, errorCB);
         }
@@ -635,7 +635,7 @@
         // Query the database
         //
         function queryDB(tx) {
-            tx.executeSql('SELECT * FROM server', [], querySuccess, errorCB);
+            tx.executeSql('SELECT * FROM servidor', [], querySuccess, errorCB);
         }
 
         function querySuccess(tx, results) {
@@ -654,12 +654,12 @@
                 // publish to internet
                 // var url = "https://api.thingspeak.com/update?api_key=2SWY1G9MF2PCFIE9&field1=" + temp;
                 // var url = "https://stealthy-allowance.000webhostapp.com/android.php?add=" + temp;
-                var url = "http://192.168.1.102:8000/api";
+                var url = "https://192.168.1.102:8000/api";
                 var request = new XMLHttpRequest();
 
                 // connected
                 request.onload = function() { 
-                    alert("Data saved on remote server successfully")
+                    alert("Data saved on remote servidor successfully")
                 }
 
                 // no internet
@@ -684,7 +684,7 @@
             if (answer) {
                 var db = window.openDatabase("phone_gap", "0.10", "Cordova Demo", 200000);
                 db.transaction(function (tx) {
-                     tx.executeSql('DELETE FROM server',[],
+                     tx.executeSql('DELETE FROM servidor',[],
                         function(tx,results){
                             //console.error("Table Dropped")
                             alert("Data has been wiped out");
